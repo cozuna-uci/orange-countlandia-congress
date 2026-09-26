@@ -35,6 +35,12 @@ const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 const PERSISTENCE_MODE = UPSTASH_URL && UPSTASH_TOKEN ? "database" : "file";
 const REDIS_STATE_KEY = "orange-countlandia-state";
 
+// Shown as a small tag on a state's card in the State Directory when that
+// state is covered by the active option -- a generic default so a new bill
+// unrelated to infrastructure doesn't inherit railway-specific wording like
+// "On the current route" (which the seeded Railway Act overrides on its own).
+const DEFAULT_BENEFIT_LABEL = "Directly benefits from proposed legislation";
+
 // ---------------------------------------------------------------------------
 // Uploaded bill materials (maps, reports).
 // ---------------------------------------------------------------------------
@@ -171,6 +177,7 @@ function backfillState() {
   if (state.announcement === undefined) state.announcement = null;
   for (const bill of Object.values(state.bills)) {
     if (!bill.attachments) bill.attachments = [];
+    if (!bill.benefitLabel) bill.benefitLabel = DEFAULT_BENEFIT_LABEL;
   }
 }
 
@@ -472,6 +479,7 @@ function publicStateView(revealOverride, viewerStateId, includeAllDossiers) {
       id: bill.id,
       title: bill.title,
       summary: bill.summary,
+      benefitLabel: bill.benefitLabel || DEFAULT_BENEFIT_LABEL,
       status: bill.status,
       activeOptionId: bill.activeOptionId,
       options: bill.options,
@@ -821,6 +829,10 @@ app.post("/api/presenter/bills/:id", requirePresenter, (req, res) => {
   const b = req.body || {};
   if (typeof b.title === "string" && b.title.trim()) bill.title = b.title.trim();
   if (typeof b.summary === "string") bill.summary = b.summary.trim();
+  if (typeof b.benefitLabel === "string") {
+    const clean = b.benefitLabel.trim().slice(0, 60);
+    bill.benefitLabel = clean || DEFAULT_BENEFIT_LABEL;
+  }
   save();
   res.json({ ok: true, bill });
 });
@@ -895,6 +907,7 @@ app.post("/api/presenter/new-bill", requirePresenter, (req, res) => {
     id,
     title: clean,
     summary: String(summary || "").trim(),
+    benefitLabel: DEFAULT_BENEFIT_LABEL,
     status: "floor",
     activeOptionId: null,
     options: [],

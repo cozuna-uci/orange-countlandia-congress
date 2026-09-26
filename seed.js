@@ -347,6 +347,7 @@ const RAILWAY_BILL = {
   title: "The National Railway Act",
   summary:
     "Proposed construction of a national railway connecting key states of Orange Countlandia. Congress must choose a route and decide whether the benefits are worth the cost -- and, under the Articles, whether states will voluntarily fund their share.",
+  benefitLabel: "On the current route", // this bill really is about a route, so it keeps the specific wording rather than the generic default
   activeOptionId: "route-1",
   options: RAILWAY_OPTIONS,
   attachments: [], // maps/reports uploaded from the presenter screen land here

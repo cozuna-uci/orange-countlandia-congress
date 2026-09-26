@@ -395,7 +395,7 @@
               <div class="swatch" style="background:${s.color};height:6px;border-radius:4px;margin-bottom:8px"></div>
               <h3 style="margin-bottom:2px">${esc(s.name)} ${id === store.stateId ? '<span class="badge-you">YOU</span>' : ""}</h3>
               <div class="muted" style="font-style:italic;margin-bottom:8px">${esc(s.motto)}</div>
-              ${served ? '<span class="tag">On the current route</span>' : ""}
+              ${served ? `<span class="tag">${esc(bill.benefitLabel || "Directly benefits from proposed legislation")}</span>` : ""}
               <p style="margin-top:8px">${esc(s.profile.blurb)}</p>
               <div class="section-title">Industries</div>
               <div>${s.profile.industries.map((i) => `<span class="tag">${esc(i)}</span>`).join("")}</div>

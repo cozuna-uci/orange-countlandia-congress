@@ -457,8 +457,13 @@
     return `
       <div class="field"><label>Title</label><input id="editBillTitle" value="${esc(bill.title)}" /></div>
       <div class="field"><label>Summary</label><textarea id="editBillSummary" rows="2">${esc(bill.summary)}</textarea></div>
+      <div class="field">
+        <label>Tag shown for states an option serves</label>
+        <input id="editBillBenefitLabel" value="${esc(bill.benefitLabel || "")}" placeholder="e.g. Directly benefits from proposed legislation" />
+        <div class="muted" style="font-size:0.8rem;margin-top:2px">Shown as a small tag on a state's card in the State Directory when that state is covered by the active option. "On the current route" makes sense for a railway bill; something like "Directly benefits from proposed legislation" reads better for other kinds of bills.</div>
+      </div>
       <div class="controls-bar">
-        <button class="btn orange small" id="saveBillBtn">Save title &amp; summary</button>
+        <button class="btn orange small" id="saveBillBtn">Save title, summary &amp; tag</button>
         <button class="btn red small" id="deleteBillBtn" ${Object.keys(d.bills).length <= 1 ? "disabled" : ""}>Delete this bill</button>
       </div>
       <hr class="divider" />
@@ -792,6 +797,7 @@
               body: JSON.stringify({
                 title: document.getElementById("editBillTitle").value,
                 summary: document.getElementById("editBillSummary").value,
+                benefitLabel: document.getElementById("editBillBenefitLabel").value,
               }),
             })
           ).then(() => toast("Bill updated."))
