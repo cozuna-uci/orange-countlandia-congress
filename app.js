@@ -12,6 +12,8 @@
     dossier: null,
     activeTab: "floor",
     amendDraft: "",
+    pendingStateId: null, // tile tapped, waiting on its passcode
+    dismissedAnnouncementId: localStorage.getItem("occ_dismissedAnnouncementId") || null,
   };
 
   function isEditingText() {
@@ -42,6 +44,36 @@
     return Number(n).toLocaleString() + " crowns";
   }
 
+  function fileSize(bytes) {
+    if (bytes == null) return "";
+    if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  }
+
+  function materialsHtml(attachments) {
+    if (!attachments || !attachments.length) return "";
+    return `
+      <div class="section-title">Materials</div>
+      <div class="materials-grid">
+        ${attachments
+          .map((a) =>
+            a.mimeType && a.mimeType.startsWith("image/")
+              ? `<a class="material-item" href="${a.url}" target="_blank" rel="noopener">
+                  <img src="${a.url}" alt="${esc(a.label)}" />
+                  <div class="material-label">${esc(a.label)}</div>
+                  <div class="material-meta">${fileSize(a.sizeBytes)}</div>
+                </a>`
+              : `<a class="material-item" href="${a.url}" target="_blank" rel="noopener">
+                  <div class="material-pdf-icon">📄</div>
+                  <div class="material-label">${esc(a.label)}</div>
+                  <div class="material-meta">PDF &middot; ${fileSize(a.sizeBytes)}</div>
+                </a>`
+          )
+          .join("")}
+      </div>
+    `;
+  }
+
   function modeLabel(mode) {
     return mode === "CONST" ? "The Constitution" : "The Articles of Confederation";
   }
@@ -70,6 +102,57 @@
     const states = store.data
       ? store.data.stateOrder.map((id) => store.data.states[id])
       : [];
+    const pending = store.pendingStateId && store.data ? store.data.states[store.pendingStateId] : null;
+
+    if (pending) {
+      root.innerHTML = `
+        <div class="center-wrap">
+          <div class="card" style="max-width:420px;width:100%">
+            <div class="hero" style="margin-top:0">
+              <div class="swatch" style="background:${pending.color};height:8px;border-radius:4px;margin-bottom:14px"></div>
+              <h1 style="font-size:1.6rem">${esc(pending.name)}</h1>
+              <p class="muted" style="font-style:italic">${esc(pending.motto)}</p>
+            </div>
+            <div class="field">
+              <label for="statePasscode">Your delegation's passcode</label>
+              <input id="statePasscode" type="password" placeholder="passcode" autofocus />
+            </div>
+            <button class="btn orange" id="stateLoginBtn" style="width:100%">Log in as ${esc(pending.name)}</button>
+            <button class="btn ghost small" id="backToGridBtn" style="width:100%;margin-top:10px">&larr; Choose a different state</button>
+          </div>
+        </div>
+      `;
+      const go = async () => {
+        try {
+          const result = await api("/api/login", {
+            method: "POST",
+            body: JSON.stringify({ stateId: pending.id, passcode: document.getElementById("statePasscode").value }),
+          });
+          store.token = result.token;
+          store.stateId = result.state.id;
+          store.stateName = result.state.name;
+          store.pendingStateId = null;
+          localStorage.setItem("occ_token", store.token);
+          localStorage.setItem("occ_stateId", store.stateId);
+          localStorage.setItem("occ_stateName", store.stateName);
+          await refresh();
+          render();
+          checkAnnouncement(); // don't make them wait up to 2s to see an already-active message
+        } catch (e) {
+          toast(e.message);
+        }
+      };
+      document.getElementById("stateLoginBtn").addEventListener("click", go);
+      document.getElementById("statePasscode").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") go();
+      });
+      document.getElementById("backToGridBtn").addEventListener("click", () => {
+        store.pendingStateId = null;
+        render();
+      });
+      return;
+    }
+
     root.innerHTML = `
       <div class="center-wrap">
         <div style="max-width:760px;width:100%">
@@ -80,7 +163,7 @@
           </div>
           <div class="card">
             <h3>Which state do you represent?</h3>
-            <p class="muted">Tap your state. Everyone in your delegation can use the same one &mdash; no password needed.</p>
+            <p class="muted">Tap your state, then enter your delegation's passcode. Everyone in your delegation can use the same one.</p>
             <div class="login-grid" id="loginGrid">
               ${states
                 .map(
@@ -98,20 +181,9 @@
       </div>
     `;
     root.querySelectorAll(".state-tile").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        try {
-          const result = await api("/api/login", { method: "POST", body: JSON.stringify({ stateId: btn.dataset.id }) });
-          store.token = result.token;
-          store.stateId = result.state.id;
-          store.stateName = result.state.name;
-          localStorage.setItem("occ_token", store.token);
-          localStorage.setItem("occ_stateId", store.stateId);
-          localStorage.setItem("occ_stateName", store.stateName);
-          await refresh();
-          render();
-        } catch (e) {
-          toast(e.message);
-        }
+      btn.addEventListener("click", () => {
+        store.pendingStateId = btn.dataset.id;
+        render();
       });
     });
   }
@@ -229,6 +301,7 @@
             <span class="pill ${statusPillClass(bill.status)}">${statusLabel(bill.status)}</span>
             <h2 style="margin-top:10px">${esc(bill.title)}</h2>
             <p>${esc(bill.summary)}</p>
+            ${materialsHtml(bill.attachments)}
             ${routeHtml}
             ${bill.presidentialAction ? `<p class="muted">The President has ${bill.presidentialAction.decision === "sign" ? "signed" : "vetoed"} this bill.</p>` : ""}
           </div>
@@ -490,12 +563,44 @@
     bindShellEvents();
   }
 
+  // ---- "Message from the Capitol" broadcast -------------------------------
+  // Lives outside #root (its own overlay div) so it survives every re-render
+  // of the main content, and is checked independently of which tab a student
+  // is on -- an announcement should interrupt regardless of what's showing.
+  function checkAnnouncement() {
+    const overlay = document.getElementById("announcementOverlay");
+    if (!overlay || !store.token || !store.stateId) return;
+    const a = store.data && store.data.announcement;
+    if (!a || a.id === store.dismissedAnnouncementId) {
+      return;
+    }
+    if (overlay.dataset.showingId === a.id) return; // already up, don't rebuild it under the reader
+    overlay.dataset.showingId = a.id;
+    overlay.innerHTML = `
+      <div class="announce-backdrop">
+        <div class="announce-card">
+          <div class="announce-badge">📯 Message from the Capitol</div>
+          <p class="announce-text">${esc(a.text)}</p>
+          <button class="btn orange" id="dismissAnnounceBtn">Got it</button>
+        </div>
+      </div>
+    `;
+    document.getElementById("dismissAnnounceBtn").addEventListener("click", () => {
+      store.dismissedAnnouncementId = a.id;
+      localStorage.setItem("occ_dismissedAnnouncementId", a.id);
+      overlay.innerHTML = "";
+      delete overlay.dataset.showingId;
+    });
+  }
+
   async function boot() {
     await refresh();
     render();
+    checkAnnouncement();
     setInterval(async () => {
       await refresh();
       if (!isEditingText()) render();
+      checkAnnouncement();
     }, 2000);
   }
 

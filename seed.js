@@ -1,12 +1,19 @@
 // Seed content for the United States of Orange Countlandia.
 // Edit this file to swap in your own states, dossiers, and legislation
 // for a different unit -- nothing else in the app needs to change.
+//
+// Each state's `passcode` is what a student types (alongside tapping their
+// state) to log in as that delegation -- it's not a real security boundary,
+// just enough friction to stop one state from casually voting as another.
+// Change any of them here, or from the presenter screen's "Manage states"
+// panel, without touching anything else.
 
 const STATES = [
   {
     id: "anaheimland",
     name: "Anaheimland",
     motto: "First to the Frontier",
+    passcode: "frontier",
     color: "#e2711d",
     population: 350000,
     profile: {
@@ -27,6 +34,7 @@ const STATES = [
     id: "santa-anatolia",
     name: "Santa Anatolia",
     motto: "Seat of the Courts",
+    passcode: "courts",
     color: "#c0392b",
     population: 310000,
     profile: {
@@ -47,6 +55,7 @@ const STATES = [
     id: "irvingshire",
     name: "Irvingshire",
     motto: "Cultivated by Design",
+    passcode: "design",
     color: "#27ae60",
     population: 300000,
     profile: {
@@ -67,6 +76,7 @@ const STATES = [
     id: "huntingtonford",
     name: "Huntingtonford",
     motto: "Salt, Surf, and Oil",
+    passcode: "oil",
     color: "#2980b9",
     population: 200000,
     profile: {
@@ -87,6 +97,7 @@ const STATES = [
     id: "mission-vejoa",
     name: "Mission Vejoa",
     motto: "Land of the Lake",
+    passcode: "lake",
     color: "#8e44ad",
     population: 95000,
     profile: {
@@ -107,6 +118,7 @@ const STATES = [
     id: "newportia",
     name: "Newportia",
     motto: "Harbor of Fortune",
+    passcode: "fortune",
     color: "#16a085",
     population: 85000,
     profile: {
@@ -127,6 +139,7 @@ const STATES = [
     id: "tustinburg",
     name: "Tustinburg",
     motto: "Grove and Garrison",
+    passcode: "garrison",
     color: "#d4ac0d",
     population: 80000,
     profile: {
@@ -147,6 +160,7 @@ const STATES = [
     id: "lakeforestia",
     name: "Lakeforestia",
     motto: "Timber and Tide",
+    passcode: "timber",
     color: "#1e8449",
     population: 85000,
     profile: {
@@ -167,6 +181,7 @@ const STATES = [
     id: "yorbania",
     name: "Yorbania",
     motto: "Gracious Living",
+    passcode: "gracious",
     color: "#a04000",
     population: 68000,
     profile: {
@@ -187,6 +202,7 @@ const STATES = [
     id: "laguna-hills",
     name: "Laguna Hills",
     motto: "Small but Sovereign",
+    passcode: "sovereign",
     color: "#7f8c8d",
     population: 32000,
     profile: {
@@ -207,6 +223,7 @@ const STATES = [
     id: "breaheim",
     name: "Breaheim",
     motto: "Never Overlooked Again",
+    passcode: "overlooked",
     color: "#5d4037",
     population: 47000,
     profile: {
@@ -227,6 +244,7 @@ const STATES = [
     id: "alisovieja",
     name: "Alisovieja",
     motto: "A New Start",
+    passcode: "newstart",
     color: "#f39c12",
     population: 50000,
     profile: {
@@ -247,6 +265,7 @@ const STATES = [
     id: "danaford",
     name: "Danaford",
     motto: "Gateway to the Sea",
+    passcode: "gateway",
     color: "#2471a3",
     population: 33000,
     profile: {
@@ -330,6 +349,7 @@ const RAILWAY_BILL = {
     "Proposed construction of a national railway connecting key states of Orange Countlandia. Congress must choose a route and decide whether the benefits are worth the cost -- and, under the Articles, whether states will voluntarily fund their share.",
   activeOptionId: "route-1",
   options: RAILWAY_OPTIONS,
+  attachments: [], // maps/reports uploaded from the presenter screen land here
 };
 
 function createInitialState() {
@@ -357,6 +377,7 @@ function createInitialState() {
       },
     },
     activeBillId: RAILWAY_BILL.id,
+    announcement: null, // { id, text, createdAt } -- the current "message from the Capitol", if any
     sessions: {},
   };
 }

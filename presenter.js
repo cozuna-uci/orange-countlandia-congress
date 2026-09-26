@@ -13,6 +13,9 @@
     editingOptionId: null,
     statesManagerOpen: false,
     editingStateId: null,
+    uploadingAttachment: false,
+    storageMode: null, // "database" | "file" -- fetched once after login, see refresh()
+    maxUploadMB: 15, // fetched alongside storageMode; default matches file mode until then
   };
 
   function toast(msg) {
@@ -28,6 +31,24 @@
     const body = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(body.error || "Something went wrong.");
     return body;
+  }
+
+  // Multipart upload -- distinct from api() because a FormData body must NOT
+  // get a manual Content-Type header (the browser sets the multipart
+  // boundary itself); everything else about error handling matches api().
+  async function apiUpload(path, formData) {
+    const headers = {};
+    if (store.token) headers.Authorization = "Bearer " + store.token;
+    const res = await fetch(path, { method: "POST", headers, body: formData });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(body.error || "Something went wrong.");
+    return body;
+  }
+
+  function fileSize(bytes) {
+    if (bytes == null) return "";
+    if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
   }
 
   function esc(s) {
@@ -185,6 +206,7 @@
       <div class="topbar">
         <div class="brand"><span class="fruit"></span> Orange Countlandia &mdash; Presenter</div>
         <div class="spacer"></div>
+        ${storageBadge()}
         <label class="pill" style="cursor:pointer">
           <input type="checkbox" id="revealToggle" ${d.revealVotesLive ? "checked" : ""} style="margin-right:6px" />
           Reveal votes live
@@ -208,6 +230,7 @@
           </div>
         </div>
 
+        ${announceCard(d)}
         ${congressSettingsCard(d)}
 
         <div class="card">
@@ -237,9 +260,55 @@
         ${resultCard(bill, lastClosed)}
         ${historyCard(bill, d)}
         ${statesManagerCard(d)}
+        ${dangerZoneCard()}
       </div>
     `;
     bindEvents(bill, d, openRound);
+  }
+
+  // ---- storage status badge --------------------------------------------------
+  function storageBadge() {
+    if (store.storageMode === "database") {
+      return `<span class="pill" title="Everything -- bills, votes, passcodes, settings, AND uploaded materials up to ${store.maxUploadMB}MB -- is saved to an external database and survives a restart." style="background:#1e8449;color:#fff">💾 Saved to database</span>`;
+    }
+    if (store.storageMode === "file") {
+      return `<span class="pill" title="Everything lives only on this instance's temporary disk -- it resets if the server restarts or redeploys (see the README to connect a free database instead)." style="background:#a04000;color:#fff">⚠️ Temporary storage</span>`;
+    }
+    return ""; // not loaded yet
+  }
+
+  // ---- danger zone -----------------------------------------------------------
+  function dangerZoneCard() {
+    return `
+      <div class="card" style="border:1px solid #c0392b">
+        <h3 style="color:#c0392b">Danger zone</h3>
+        <p class="muted">Wipes every state, bill, vote, amendment, uploaded material, and passcode back to exactly what <code>seed.js</code> defines, and logs out every student. Use this to start a brand-new semester from a clean slate -- there's no undo.</p>
+        <button class="btn ghost small" id="factoryResetBtn" style="border-color:#c0392b;color:#c0392b">Factory reset everything</button>
+      </div>
+    `;
+  }
+
+  // ---- Message the class ("a message from the Capitol") --------------------
+  function announceCard(d) {
+    const a = d.announcement;
+    return `
+      <div class="card">
+        <h3>Message the class</h3>
+        <p class="muted">Pops up on every logged-in student's screen until they dismiss it &mdash; good for "Voting starts in 5 minutes" or "A new amendment was just proposed."</p>
+        <div class="field">
+          <textarea id="announceText" rows="2" placeholder="e.g. Voting on the Railway Act begins in 5 minutes."></textarea>
+        </div>
+        <div class="controls-bar">
+          <button class="btn orange small" id="sendAnnounceBtn">Send to all students</button>
+          <button class="btn ghost small" id="clearAnnounceBtn" ${a ? "" : "disabled"}>Clear current message</button>
+        </div>
+        ${
+          a
+            ? `<p class="muted" style="margin-top:8px">Current message (sent ${esc(new Date(a.createdAt).toLocaleTimeString())}): &ldquo;${esc(a.text)}&rdquo;</p>`
+            : `<p class="muted" style="margin-top:8px">No message is currently showing.</p>`
+        }
+      </div>
+    `;
   }
 
   // ---- Congress settings (house size / delegation unity) -------------------
@@ -324,6 +393,66 @@
       </div>`;
   }
 
+  function materialsReadOnlyHtml(attachments) {
+    if (!attachments || !attachments.length) return "";
+    return `
+      <div class="section-title">Materials</div>
+      <div class="materials-grid">
+        ${attachments
+          .map((a) =>
+            a.mimeType && a.mimeType.startsWith("image/")
+              ? `<a class="material-item" href="${a.url}" target="_blank" rel="noopener">
+                  <img src="${a.url}" alt="${esc(a.label)}" />
+                  <div class="material-label">${esc(a.label)}</div>
+                  <div class="material-meta">${fileSize(a.sizeBytes)}</div>
+                </a>`
+              : `<a class="material-item" href="${a.url}" target="_blank" rel="noopener">
+                  <div class="material-pdf-icon">📄</div>
+                  <div class="material-label">${esc(a.label)}</div>
+                  <div class="material-meta">PDF &middot; ${fileSize(a.sizeBytes)}</div>
+                </a>`
+          )
+          .join("")}
+      </div>
+    `;
+  }
+
+  function materialsEditHtml(bill) {
+    const attachments = bill.attachments || [];
+    return `
+      <div class="section-title">Materials (maps, reports &mdash; images or PDFs)</div>
+      ${
+        attachments.length
+          ? `<div class="materials-grid">
+              ${attachments
+                .map(
+                  (a) => `
+                <div class="material-item">
+                  ${
+                    a.mimeType && a.mimeType.startsWith("image/")
+                      ? `<img src="${a.url}" alt="${esc(a.label)}" />`
+                      : `<div class="material-pdf-icon">📄</div>`
+                  }
+                  <div class="material-label">${esc(a.label)}</div>
+                  <div class="material-meta">${fileSize(a.sizeBytes)}</div>
+                  <div class="controls-bar" style="margin-top:6px">
+                    <a class="btn ghost small" href="${a.url}" target="_blank" rel="noopener">View</a>
+                    <button class="btn red small" data-delete-attachment="${a.id}">Delete</button>
+                  </div>
+                </div>`
+                )
+                .join("")}
+            </div>`
+          : '<p class="muted">No materials attached yet.</p>'
+      }
+      <div id="attachmentUploadForm" style="margin-top:10px">
+        <div class="field"><label>Label</label><input id="newAttachmentLabel" placeholder="e.g. Proposed Route Map" /></div>
+        <div class="field"><label>File (image or PDF, up to ${store.maxUploadMB}MB)</label><input id="newAttachmentFile" type="file" accept="image/png,image/jpeg,image/gif,image/webp,application/pdf" /></div>
+        <button class="btn orange small" id="uploadAttachmentBtn" ${store.uploadingAttachment ? "disabled" : ""}>${store.uploadingAttachment ? "Uploading…" : "Upload"}</button>
+      </div>
+    `;
+  }
+
   function billEditForm(bill, d, roundOpen) {
     return `
       <div class="field"><label>Title</label><input id="editBillTitle" value="${esc(bill.title)}" /></div>
@@ -332,6 +461,8 @@
         <button class="btn orange small" id="saveBillBtn">Save title &amp; summary</button>
         <button class="btn red small" id="deleteBillBtn" ${Object.keys(d.bills).length <= 1 ? "disabled" : ""}>Delete this bill</button>
       </div>
+      <hr class="divider" />
+      ${materialsEditHtml(bill)}
       <hr class="divider" />
       <div class="section-title">Options${roundOpen ? " (close the open vote to edit)" : ""}</div>
       ${(bill.options || []).map((o) => optionEditRow(o, d, roundOpen)).join("") || '<p class="muted">No options yet.</p>'}
@@ -357,6 +488,7 @@
             : `
           <h2 style="margin-top:10px">${esc(bill.title)}</h2>
           <p>${esc(bill.summary)}</p>
+          ${materialsReadOnlyHtml(bill.attachments)}
           ${
             bill.options && bill.options.length
               ? `
@@ -546,6 +678,7 @@
         <div class="card" id="stateEditForm_${s.id}" style="margin-bottom:0">
           <div class="field"><label>Name</label><input id="stName_${s.id}" value="${esc(s.name)}" /></div>
           <div class="field"><label>Motto</label><input id="stMotto_${s.id}" value="${esc(s.motto)}" /></div>
+          <div class="field"><label>Student login passcode</label><input id="stPasscode_${s.id}" value="${esc(s.passcode || "")}" /></div>
           <div class="field"><label>Color</label><input id="stColor_${s.id}" type="color" value="${s.color}" style="height:38px;padding:2px" /></div>
           <div class="field"><label>Population</label><input id="stPop_${s.id}" type="number" min="0" value="${s.population}" /></div>
           <div class="field"><label>Industries (one per line)</label><textarea id="stInd_${s.id}" rows="3">${esc((s.profile.industries || []).join("\n"))}</textarea></div>
@@ -563,6 +696,7 @@
         <div class="swatch" style="background:${s.color};height:6px;border-radius:4px;margin-bottom:8px"></div>
         <h4 style="margin-bottom:2px">${esc(s.name)}</h4>
         <div class="muted" style="font-style:italic;margin-bottom:6px">${esc(s.motto)} &middot; pop. ${s.population.toLocaleString()}</div>
+        <div class="muted" style="margin-bottom:6px">Passcode: <strong style="font-family:monospace">${esc(s.passcode || "(none set)")}</strong></div>
         <div class="dossier-box"><p style="margin:0">${esc(s.dossier ? s.dossier.text : "")}</p></div>
         <div class="controls-bar" style="margin-top:10px">
           <button class="btn ghost small" data-edit-state="${s.id}">Edit</button>
@@ -592,7 +726,20 @@
     document.getElementById("logoutAllBtn").addEventListener("click", () =>
       act(() => api("/api/presenter/logout-all", { method: "POST" })).then(() => toast("All student logins cleared."))
     );
+    document.getElementById("factoryResetBtn").addEventListener("click", () => {
+      if (!confirm("This wipes every state, bill, vote, and passcode back to seed.js and cannot be undone. Continue?")) return;
+      act(() => api("/api/presenter/factory-reset", { method: "POST" })).then(() => toast("Reset to a fresh start."));
+    });
     rebind("[data-mode]", "click", (e) => act(() => api("/api/presenter/mode", { method: "POST", body: JSON.stringify({ mode: e.currentTarget.dataset.mode }) })));
+
+    document.getElementById("sendAnnounceBtn").addEventListener("click", () => {
+      const text = document.getElementById("announceText").value.trim();
+      if (!text) return toast("Write a message first.");
+      act(() => api("/api/presenter/announcement", { method: "POST", body: JSON.stringify({ text }) })).then(() => toast("Sent to all students."));
+    });
+    document.getElementById("clearAnnounceBtn").addEventListener("click", () =>
+      act(() => api("/api/presenter/announcement/clear", { method: "POST" }))
+    );
 
     document.getElementById("houseSizeSaveBtn").addEventListener("click", () =>
       act(() => api("/api/presenter/house-size", { method: "POST", body: JSON.stringify({ size: Number(document.getElementById("houseSizeInput").value) }) })).then(() => toast("House size updated."))
@@ -659,6 +806,34 @@
           });
         });
       }
+      const uploadAttachmentBtn = document.getElementById("uploadAttachmentBtn");
+      if (uploadAttachmentBtn) {
+        uploadAttachmentBtn.addEventListener("click", async () => {
+          const fileInput = document.getElementById("newAttachmentFile");
+          const file = fileInput.files[0];
+          if (!file) return toast("Choose a file first.");
+          const label = document.getElementById("newAttachmentLabel").value;
+          const fd = new FormData();
+          fd.append("file", file);
+          if (label) fd.append("label", label);
+          store.uploadingAttachment = true;
+          render();
+          try {
+            await apiUpload(`/api/presenter/bills/${bill.id}/attachments`, fd);
+            toast("Uploaded.");
+          } catch (e) {
+            toast(e.message);
+          }
+          store.uploadingAttachment = false;
+          await refresh();
+          render();
+        });
+      }
+      rebind("[data-delete-attachment]", "click", (e) => {
+        const id = e.currentTarget.dataset.deleteAttachment;
+        if (!confirm("Delete this material?")) return;
+        act(() => api(`/api/presenter/bills/${bill.id}/attachments/${id}/delete`, { method: "POST" }));
+      });
       const addOptionBtn = document.getElementById("addOptionBtn");
       if (addOptionBtn) {
         addOptionBtn.addEventListener("click", () => {
@@ -794,6 +969,7 @@
           body: JSON.stringify({
             name: document.getElementById(`stName_${id}`).value,
             motto: document.getElementById(`stMotto_${id}`).value,
+            passcode: document.getElementById(`stPasscode_${id}`).value,
             color: document.getElementById(`stColor_${id}`).value,
             population: document.getElementById(`stPop_${id}`).value,
             profile: {
@@ -816,6 +992,13 @@
     if (!store.token) return;
     try {
       store.data = await api("/api/presenter/full");
+      // Static for the life of the deployed instance -- fetch once, not on
+      // every 2-second poll.
+      if (!store.storageMode) {
+        const status = await api("/api/presenter/storage-status");
+        store.storageMode = status.mode;
+        store.maxUploadMB = status.maxUploadMB;
+      }
     } catch (e) {
       if (String(e.message).toLowerCase().includes("presenter")) {
         store.token = null;
