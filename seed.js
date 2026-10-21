@@ -12,274 +12,274 @@ const STATES = [
   {
     id: "anaheimland",
     name: "Anaheimland",
-    motto: "First to the Frontier",
+    motto: "The Heart of Wonder",
     passcode: "frontier",
     color: "#e2711d",
-    population: 350000,
+    population: 325000,
     profile: {
-      industries: ["Entertainment & tourism", "Light manufacturing", "Hospitality"],
+      industries: ["Entertainment & amusement parks", "Tourism & hospitality"],
       priorities: [
-        "Faster inland freight and passenger links to grow the tourist trade",
-        "Broadly pro-infrastructure, but wary of taxes on hospitality revenue",
+        "Protecting the entertainment economy from new national taxes",
+        "Keeping infrastructure decisions at the state level, not the Federation's",
       ],
       blurb:
-        "The largest state in Orange Countlandia, built around the great amusement grounds of the Kingdom of the Mouse. Anaheimland's innkeepers and merchants are used to being the center of attention -- and expect any national project to run through them, not around them.",
+        "The largest state in Orange Countlandia, built around the sprawling Great Adventure Park and the entertainment economy that surrounds it. Anaheimland is proud of its tourist draw and deeply skeptical of any national project or tax that might slow it down.",
     },
     dossier: {
       text:
-        "Leadership is quietly worried that a national railway mostly helps neighboring states pass through Anaheimland's territory on the way to somewhere else, rather than terminating here. The delegation will support a plan that guarantees Anaheimland a full terminal and rail yard; without that guarantee, expect a lukewarm or split vote. The innkeepers' guild and the Kingdom of the Mouse are lobbying hard for yes; wagon-road tollkeepers are lobbying just as hard for no.",
+        "Anaheimland is the railway's starting point and a willing supporter at ¤750,000 -- but only on narrow terms. The delegation will hold out for a dedicated Anaheimland station, a route that keeps travel time to the coast as short as possible, a lower contribution if anyone will grant it, and firm limits on how much say Los Angelland gets in exchange for its funding. Any amendment touching those four points is worth watching closely.",
     },
   },
   {
     id: "santa-anatolia",
     name: "Santa Anatolia",
-    motto: "Seat of the Courts",
+    motto: "To Lead is to Serve",
     passcode: "courts",
     color: "#c0392b",
-    population: 310000,
+    population: 340000,
     profile: {
-      industries: ["Garment & textile trade", "Civic administration", "Produce markets"],
+      industries: ["Governance & civil service", "Regional courts and administration"],
       priorities: [
-        "Modernizing trade routes to move goods to market faster",
-        "Protecting local authority over commerce from federal encroachment",
+        "Strengthening national governance and institutional stability",
+        "Generally wary of new taxes, except where they fund stronger governance",
       ],
       blurb:
-        "Home to the regional courts and a booming textile trade, Santa Anatolia sits at the crossroads of nearly every proposed line. Its markets move enormous volumes of cloth and produce, and its council prides itself on independence from any distant capital.",
+        "The political heart of Orange Countlandia and its most populous state, home to the regional courts and much of the Confederation's civil service. Santa Anatolia takes governing seriously -- including the hard parts.",
     },
     dossier: {
       text:
-        "The textile guild sees enormous profit in faster shipping and is pushing hard for a yes vote. But several old-guard council members distrust ceding any planning authority to 'the Federation' and will only back the bill if Santa Anatolia keeps full control of its own rail yard and hiring. Watch for an amendment demanding exactly that.",
+        "As a key stop on the line, Santa Anatolia supports the act and is prepared to contribute generously at ¤1,250,000, despite some concern about route changes. As the political center, their delegation tends to see stable national projects as good for the Confederation's credibility -- expect them to argue forcefully for the bill on the floor rather than just voting yes quietly.",
     },
   },
   {
     id: "irvingshire",
     name: "Irvingshire",
-    motto: "Cultivated by Design",
+    motto: "Knowledge is Power",
     passcode: "design",
     color: "#27ae60",
-    population: 300000,
+    population: 290000,
     profile: {
-      industries: ["Grain & citrus agriculture", "An emerging scholars' academy"],
+      industries: ["Academia & higher education"],
       priorities: [
-        "Getting crops to market before they spoil",
-        "Linking new infrastructure to investment in the Academy",
+        "Targeted investment in education over general national spending",
+        "Neutral on most taxation, more open to it when it funds intellectual growth",
       ],
       blurb:
-        "A carefully planned state of orchards, grain fields, and a young academy that dreams of becoming the intellectual center of the nation. Irvingshire's farmers want speed to market; its scholars want relevance.",
+        "Home to the most prestigious university in Orange Countlandia, Irvingshire sees itself as the nation's mind, even if it doesn't always act like its muscle.",
     },
     dossier: {
       text:
-        "Farmers are enthusiastic about any route that touches Irvingshire and are prepared to vote yes on all three plans. The complication is procedural, not political: the Academy's founding charter forbids the state from taking on public debt without the full faculty senate's approval, which could delay funding even after a floor vote passes. The delegation may need to vote yes and then explain a slow start.",
+        "Irvingshire keeps a station on the main line for a minimal ¤250,000 contribution, and the delegation currently supports the bill on those terms. Their support is conditional, though -- lose the stop, or get asked to contribute more, and a reform-minded faction in the delegation is ready to argue for flipping to no.",
     },
   },
   {
     id: "huntingtonford",
     name: "Huntingtonford",
-    motto: "Salt, Surf, and Oil",
+    motto: "By the Ocean, For the People",
     passcode: "oil",
     color: "#2980b9",
-    population: 200000,
+    population: 185000,
     profile: {
-      industries: ["Coastal fishing fleets", "Whale-oil refining", "Surf-plank craftsmen"],
+      industries: ["Fisheries", "Coastal tourism"],
       priorities: [
-        "Protecting the coastal fishing economy",
-        "Deep skepticism of inland projects that never touch the coast",
+        "Opposed to national taxes on an economy they consider purely local",
+        "Rebuilding a tourism trade recently hurt by piracy",
       ],
       blurb:
-        "A harbor state built on fishing fleets and whale-oil refineries, proud of its coastline and suspicious of any national project drawn up by inland surveyors who have never smelled low tide.",
+        "A fishing and tourism economy along a coastline that has seen better years -- recent piracy has left Huntingtonford more protective of its own resources, not less.",
     },
     dossier: {
       text:
-        "Every proposed line bypasses Huntingtonford's harbor entirely, and leadership is privately furious about it. The delegation is instructed to vote no on all three routes as a matter of principle unless an amendment adds a coastal spur. Several council members are drafting a rival 'Coastal Line' proposal of their own to introduce as an amendment if given the chance.",
+        "As a large state with no stop anywhere on the railway, Huntingtonford opposes the bill outright and has said it won't support any version of the act unless a station is added or its ¤250,000 contribution is waived entirely. With tourism revenue already down from piracy along the coast, the delegation has little patience for a 'voluntary' contribution to a project they'll never use.",
     },
   },
   {
     id: "mission-vejoa",
     name: "Mission Vejoa",
-    motto: "Land of the Lake",
+    motto: "From the Soil, We Rise",
     passcode: "lake",
     color: "#8e44ad",
-    population: 95000,
+    population: 110000,
     profile: {
-      industries: ["Cattle ranching", "Orchard estates", "Lake tourism"],
+      industries: ["Citrus groves & organic farming", "Sustainable agriculture"],
       priorities: [
-        "Rising land values and ranch export routes",
-        "Fair compensation for any rail right-of-way through grazing land",
+        "Fast, reliable routes to get crops to market before they spoil",
+        "Willing to accept national taxes, but only ones that support agriculture and sustainability",
       ],
       blurb:
-        "Rolling ranchland around a scenic lake, home to cattle families who have worked the same hills for generations and increasingly to lakeside vacation cottages for the wealthy of neighboring states.",
+        "A state of vast citrus groves and sustainable farms that has built its identity around harmony with the land. Mission Vejoa backs national projects readily when they visibly help its farmers.",
     },
     dossier: {
       text:
-        "The ranching families are split: some want the railway to ship cattle faster, others fear a rail line cutting through grazing land with no compensation. The delegation is instructed to push for a right-of-way compensation clause as a condition of a yes vote -- a natural amendment for them to propose.",
+        "Mission Vejoa contributes ¤1,000,000 and supports the act, seeing it as vital infrastructure for its agricultural economy -- even though the current route gives them no station of their own. In exchange they want a dedicated stop to move citrus and produce quickly, firm guarantees that rural growers get fair access to the line, and some relief on the taxes their farmers pay. Delays worry them, but they remain firmly in favor unless those terms erode.",
     },
   },
   {
     id: "newportia",
     name: "Newportia",
-    motto: "Harbor of Fortune",
+    motto: "To Sail is To Prosper",
     passcode: "fortune",
     color: "#16a085",
-    population: 85000,
+    population: 200000,
     profile: {
-      industries: ["Harbor trade", "Fashion Island luxury markets", "Banking"],
+      industries: ["Luxury goods & yacht manufacturing", "Upscale fashion trade (Fashion Island)", "Banking"],
       priorities: [
         "Protecting its status as the region's premier seaport",
-        "Fiscal caution toward large national spending projects",
+        "Open to national taxes, but only when they clearly grow trade and luxury industries",
       ],
       blurb:
-        "The wealthiest harbor in Orange Countlandia, home to the glittering markets of Fashion Island and the bankers who finance half the nation's trade. Newportia already has everything a railway might offer -- which makes it want the railway least of all.",
+        "The wealthiest harbor in Orange Countlandia, home to the glittering markets of Fashion Island, a thriving yacht trade, and the bankers who finance much of the nation's commerce. Newportia is unusually willing to fund the Federation -- when it sees something in return.",
     },
     dossier: {
       text:
-        "Newportia's bankers are quietly funding opposition to the Railway Act: an inland rail network would let other states ship goods directly rather than through Newportia's docks, cutting into harbor fees and banking fortunes. Publicly, the delegation will cite 'fiscal responsibility' and the cost to taxpayers rather than admit the real motive.",
+        "Newportia is asked for the single largest state contribution, ¤2,000,000, despite having no stop on the proposed route -- and the delegation opposes the bill as written. They want priority rail access for Newportia-shipped goods, a much smaller contribution paired with a station of their own, firm guarantees the line will boost coastal trade, and assurance that the Los Angelland loan buys no say over national trade routes. Meet those asks and Newportia's usual willingness to fund the Federation could flip this to a yes.",
     },
   },
   {
     id: "tustinburg",
     name: "Tustinburg",
-    motto: "Grove and Garrison",
+    motto: "Reach for the Skies",
     passcode: "garrison",
     color: "#d4ac0d",
     population: 80000,
     profile: {
-      industries: ["Citrus groves", "Militia armory & airship mooring yards"],
+      industries: ["Aviation & aeronautics research", "Locomotive & rolling-stock manufacturing"],
       priorities: [
-        "Faster export routes for citrus growers",
-        "Federal support for maintaining the armory and mooring yards",
+        "Opposed to national taxes unless they directly fund aeronautical research",
+        "Protecting and growing its manufacturing contracts",
       ],
       blurb:
-        "Best known for its citrus groves and the great mooring yards where the militia's airships are kept. A small state that punches above its weight whenever national defense spending comes up.",
+        "Home to the national aeronautics research center and a growing locomotive works, Tustinburg is small but increasingly indispensable to anything the Confederation tries to build.",
     },
     dossier: {
       text:
-        "The armory commandant will only back the bill if the chosen route also funds a spur line to the mooring yards for shipping matériel -- a very specific ask. The grove owners, by contrast, want a railway on almost any route and don't much care about the spur. The delegation is internally divided on how hard to push an amendment for it.",
+        "Tustinburg stands to profit twice over: its contribution is a modest ¤500,000, and its workshops are the ones building the railway's locomotives. The delegation fully backs the project and sees little downside, as long as construction stays on schedule -- a delay anywhere else on the line could cost Tustinburg a manufacturing contract, so watch them push hard against any amendment that slows things down.",
     },
   },
   {
     id: "lakeforestia",
     name: "Lakeforestia",
-    motto: "Timber and Tide",
+    motto: "From Forests, We Prosper",
     passcode: "timber",
     color: "#1e8449",
-    population: 85000,
+    population: 150000,
     profile: {
-      industries: ["Timber", "Lake fisheries", "Resort cabins"],
+      industries: ["Forestry & woodworking", "Fine furniture"],
       priorities: [
-        "Becoming a hub of the national railway for jobs and toll revenue",
-        "Making sure hosting a hub doesn't mean footing most of the bill",
+        "Open to taxes that fund sustainable forestry and environmental protection",
+        "Becoming a hub for national infrastructure, without footing a hub's share of the bill",
       ],
       blurb:
-        "A forested lake state that has quietly positioned itself as the natural crossroads of any national rail network -- and stands to gain the most jobs and toll revenue if the biggest, most ambitious plan goes through.",
+        "A forested state built on timber and fine woodworking, Lakeforestia has quietly started angling to become the crossroads of anything the Confederation builds next.",
     },
     dossier: {
       text:
-        "Town council is thrilled at the idea of becoming the railway's central hub under the largest plan, but privately worried that hub status also means the most construction disruption and the largest local funding ask under the Articles' voluntary-contribution system. They want the Federation (or wealthier states) to cover a larger share of Lakeforestia's portion specifically -- a good opening for an amendment.",
+        "Lakeforestia's ¤250,000 contribution buys a station on the main line, and the delegation is an enthusiastic -- if financially stretched -- yes. They're also the ones who proposed the larger hub-and-spoke plan that would put Lakeforestia at the center of the whole network; they argue that hosting that much traffic is contribution enough, and shouldn't come with a bigger bill. Delays or route changes could cool their enthusiasm fast.",
     },
   },
   {
     id: "yorbania",
     name: "Yorbania",
-    motto: "Gracious Living",
+    motto: "In Precision, We Trust",
     passcode: "gracious",
     color: "#a04000",
-    population: 68000,
+    population: 70000,
     profile: {
-      industries: ["Horse ranching", "Orchard estates", "Gentry landholdings"],
+      industries: ["Precision manufacturing", "Machine tooling"],
       priorities: [
-        "Prestige and connectivity for its landed estates",
-        "Preserving the character of the countryside",
+        "Self-reliant manufacturing, free of federal interference",
+        "Wary of growing foreign influence from neighboring colonies",
       ],
       blurb:
-        "Rolling hills of horse ranches and orchard estates owned by Orange Countlandia's landed gentry, who prize their tranquil, gracious way of life above almost everything else.",
+        "A state of exacting machinists and toolmakers who trust their own precision more than anyone else's promises -- including the Federation's.",
     },
     dossier: {
       text:
-        "The gentry are quietly fine with a railway so long as it does not run through their finest estates. The delegation carries a marked-up map of exactly which parcels are off-limits, and any route change could reopen that fight even after a plan seems settled.",
+        "Yorbania opposes the main-line bill: a route that excludes their state doesn't justify even their ¤250,000 minimum contribution, and they're uneasy about the Federation leaning on outside funding from Los Angelland to make the numbers work. But they've signaled real interest in a detour that reaches Yorbania -- and have hinted they'd put up significantly more money for it -- which is exactly the trade an alternate-route amendment could offer them.",
     },
   },
   {
     id: "laguna-hills",
     name: "Laguna Hills",
-    motto: "Small but Sovereign",
+    motto: "Creativity Through Community",
     passcode: "sovereign",
     color: "#7f8c8d",
-    population: 32000,
+    population: 95000,
     profile: {
-      industries: ["Artisan pottery", "Small hillside farms"],
+      industries: ["Fine arts & artisan crafts", "Tapestry weaving"],
       priorities: [
-        "Not being taxed for a project that barely touches the state",
-        "Any investment at all, given how rarely it comes",
+        "Reluctant to accept taxation unless it directly benefits the arts and crafts community",
+        "Preserving its small but tight-knit creative economy",
       ],
       blurb:
-        "One of the smallest states in the union, known for its hillside potters and modest farms. Laguna Hills rarely gets a say in national plans and has learned to make the most of the leverage it does have.",
+        "Known across the Confederation for its intricate tapestry weaving and a thriving community of artisans, the Commonwealth of Laguna Hills measures prosperity differently than its larger neighbors.",
     },
     dossier: {
       text:
-        "This small delegation knows it has almost no leverage on its own. They are instructed to vote however secures the best deal for the state's tiny treasury, and are privately willing to trade their vote for a promise of a future farm-to-market road -- a cheap concession for a bigger state to offer in exchange for support.",
+        "Laguna Hills falls under the Act's ¤250,000 minimum-contribution clause and firmly opposes the bill, arguing it sees no direct benefit from a line that doesn't come near it. They've said plainly they won't pay the contribution if it's simply mandated -- but they do contribute to national projects when the money is earmarked for something that touches their artisan economy, which could be a useful opening for an amendment.",
     },
   },
   {
     id: "breaheim",
     name: "Breaheim",
-    motto: "Never Overlooked Again",
+    motto: "Fueling the Future",
     passcode: "overlooked",
     color: "#5d4037",
-    population: 47000,
+    population: 65000,
     profile: {
-      industries: ["Oil seeps & tar pits", "Small foundries"],
+      industries: ["Oil & energy production"],
       priorities: [
-        "Finally receiving federal investment after being passed over before",
-        "Being included on the map, literally",
+        "Open to national taxes on infrastructure, but wary of any tax that targets energy production directly",
+        "Modernizing the energy industry, carefully",
       ],
       blurb:
-        "A small state built around its oil seeps and tar pits, long overlooked by planners who route new projects around it rather than through it.",
+        "The primary source of fuel for all of Orange Countlandia, Breaheim has quietly become one of the states the rest of the Confederation can least afford to ignore.",
     },
     dossier: {
       text:
-        "Breaheim is left off every proposed route, and the delegation is deeply resentful about it. They are prepared to vote no on all three plans as a protest unless an amendment adds even a small spur to Breaheim -- and may propose exactly that amendment themselves the moment the floor opens.",
+        "Breaheim is asked for ¤1,000,000 and currently opposes the bill, arguing the railway mostly benefits states it doesn't serve. That's a notable shift from their usual posture -- Breaheim is normally one of the more reliable contributors to the national treasury when energy or infrastructure money is involved, so a station, a spur, or simply a smaller ask could bring them back in line with their usual yes.",
     },
   },
   {
     id: "alisovieja",
     name: "Alisovieja",
-    motto: "A New Start",
+    motto: "Tomorrow, Today",
     passcode: "newstart",
     color: "#f39c12",
-    population: 50000,
+    population: 85000,
     profile: {
-      industries: ["New commerce district", "Small workshops"],
+      industries: ["High-tech startups", "Virtual reality & applied research"],
       priorities: [
-        "Attracting settlers and trade to a young state",
-        "Growth, almost at any cost",
+        "Open to taxation, provided it funds tech infrastructure and innovation",
+        "Attracting new settlers and investment to a still-young state",
       ],
       blurb:
-        "The newest and least established state in the union, little more than a commerce district and a handful of workshops -- but growing fast, and eager to be noticed.",
+        "The youngest and most forward-looking state in the union, built on a fast-growing cluster of tech startups and virtual-reality research. Alisovieja wants to be known for tomorrow, not yesterday.",
     },
     dossier: {
       text:
-        "Leadership is told to vote yes on almost anything that brings settlers and trade to Alisovieja. But the state's brand-new treasury is thin, and some officials privately worry about taking on debt before the treasury is even fully established -- a tension between ambition and caution the delegation hasn't resolved.",
+        "Alisovieja's ¤500,000 contribution buys it no stop on the main line, and the delegation currently opposes the bill on exactly those grounds -- a small state paying in for a project that runs past it. They are generally one of the more tax-friendly delegations in the Confederation, so a station, a reduced ask, or a tech-infrastructure sweetener could move them, even though none of that is on the table in the current proposal.",
     },
   },
   {
     id: "danaford",
     name: "Danaford",
-    motto: "Gateway to the Sea",
+    motto: "Anchored in Tradition",
     passcode: "gateway",
     color: "#2471a3",
-    population: 33000,
+    population: 45000,
     profile: {
-      industries: ["Whaling & fishing harbor", "Boat works"],
+      industries: ["Maritime engineering & shipbuilding"],
       priorities: [
-        "A coastal terminus to move fish and goods inland faster",
+        "Strongly opposed to national taxes that could burden the maritime trade",
         "Fair treatment for a very small state under any funding formula",
       ],
       blurb:
-        "The smallest state in the union, anchored by a small but busy whaling and fishing harbor at the southern edge of the nation.",
+        "A small maritime state anchored by its shipbuilding yards and a deep-rooted respect for the old ways of doing things. Danaford moves carefully, even when it stands to benefit.",
     },
     dossier: {
       text:
-        "Danaford is thrilled to be the southern terminus in every proposed plan, and the harbor guild is fully behind the bill. But the state's tiny population means its 'voluntary' funding contribution under the Articles would be disproportionately painful, and the delegation hopes wealthier states will quietly agree to cover more of the cost.",
+        "Danaford is the railway's southern terminus and still opposes the bill: a ¤1,000,000 contribution feels steep for a state its size, and the delegation worries openly about delays and runaway costs eating into that investment. They are not against the project in principle -- a smaller or phased contribution could well bring them around.",
     },
   },
 ];
@@ -294,13 +294,12 @@ const RAILWAY_OPTIONS = [
     name: "Main Line Plan",
     cost: 15000000,
     detail:
-      "A direct line from Anaheimland through Santa Anatolia, Irvingshire, and Lakeforestia down to Mission Vejoa and Danaford.",
+      "The Act's base proposal: begins in Anaheimland and runs through Santa Anatolia and Irvingshire to a station at Lakeforestia, terminating in Danaford. Total cost ¤15,000,000, funded by ¤5,750,000 from the national treasury, named contributions from eight states, and a Confederation bond covering the rest. Mission Vejoa and Tustinburg both contribute funding under this plan despite having no station of their own.",
     servedStateIds: [
       "anaheimland",
       "santa-anatolia",
       "irvingshire",
       "lakeforestia",
-      "mission-vejoa",
       "danaford",
     ],
   },
@@ -309,7 +308,7 @@ const RAILWAY_OPTIONS = [
     name: "Yorbania Detour Plan",
     cost: 22000000,
     detail:
-      "The Main Line, rerouted north through Yorbania and Tustinburg before rejoining the line at Irvingshire.",
+      "The Main Line, extended north through Yorbania and Tustinburg before rejoining the route at Irvingshire -- with Los Angelland offering ¤5,000,000 to push the line further north into their own southernmost city. Yorbania has signaled it would raise its own contribution substantially to secure a stop. Several states see the Los Angelland money as a foreign foot in the door on a domestic project.",
     servedStateIds: [
       "anaheimland",
       "santa-anatolia",
@@ -317,7 +316,6 @@ const RAILWAY_OPTIONS = [
       "tustinburg",
       "irvingshire",
       "lakeforestia",
-      "mission-vejoa",
       "danaford",
     ],
   },
@@ -326,7 +324,7 @@ const RAILWAY_OPTIONS = [
     name: "Lakeforestia Transfer Plan",
     cost: 36000000,
     detail:
-      "The most ambitious plan: a central transfer hub at Lakeforestia feeding spokes out to Laguna Hills, Alisovieja, Mission Vejoa, and Danaford, on top of the full northern route.",
+      "The most ambitious plan on the table: a full rework of the network around a central transfer hub at Lakeforestia, with spokes reaching Laguna Hills, Alisovieja, Mission Vejoa, and Danaford on top of the full northern route. It more than doubles the Act's base cost. Lakeforestia argues that hosting the hub is contribution enough and shouldn't mean a bigger bill, while Anaheimland, Santa Anatolia, and Irvingshire are uneasy about the network's center sitting so far from them.",
     servedStateIds: [
       "anaheimland",
       "santa-anatolia",
@@ -346,7 +344,7 @@ const RAILWAY_BILL = {
   id: "national-railway-act",
   title: "The National Railway Act",
   summary:
-    "Proposed construction of a national railway connecting key states of Orange Countlandia. Congress must choose a route and decide whether the benefits are worth the cost -- and, under the Articles, whether states will voluntarily fund their share.",
+    "The Congress of the Federation's proposal for a ¤15,000,000 railway linking the states of Orange Countlandia, funded by the national treasury, named state contributions, and a Confederation bond. Congress must choose a route, weigh outside funding offers from Los Angelland and Yorbania, and decide -- under the Articles -- whether enough states will voluntarily fund their share to make it real.",
   benefitLabel: "On the current route", // this bill really is about a route, so it keeps the specific wording rather than the generic default
   activeOptionId: "route-1",
   options: RAILWAY_OPTIONS,
